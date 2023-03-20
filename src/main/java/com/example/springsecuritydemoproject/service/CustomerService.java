@@ -1,7 +1,9 @@
 package com.example.springsecuritydemoproject.service;
 
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.example.springsecuritydemoproject.dto.CustomerDto;
 import com.example.springsecuritydemoproject.entity.Customer;
@@ -26,6 +28,11 @@ public class CustomerService {
         customer.setPassword(hashPwd);
 
         return this.customerMapper.toCustomerDto(this.customerRepository.save(customer));
+    }
+
+    public CustomerDto getCustomerByEmail(final String email) {
+        return this.customerMapper.toCustomerDto(this.customerRepository.findFirstByEmail(email)
+            .orElseThrow(() -> new RuntimeException(String.format("User with email %s was not found", email))));
     }
 
 }
