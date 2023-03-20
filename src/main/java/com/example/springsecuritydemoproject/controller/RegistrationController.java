@@ -24,7 +24,8 @@ public class RegistrationController {
 
         return Optional.ofNullable(createdCustomer)
             .map(c -> ResponseEntity
-                .ok(String.format("Successfully created customer with email %s", c.getEmail())))
+                .status(HttpStatus.CREATED)
+                .body(String.format("Successfully created customer with email %s", c.getEmail())))
             .orElse(ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(String.format("Error occurred while trying to create customer with email %s. Please try again.",
