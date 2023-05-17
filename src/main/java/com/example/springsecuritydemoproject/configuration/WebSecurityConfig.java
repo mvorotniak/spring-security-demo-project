@@ -7,13 +7,28 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.BCryptVersion;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 public class WebSecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.cors().configurationSource(new CorsConfigurationSource() {
+                @Override
+                public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.addAllowedOrigin("*");
+                    configuration.addAllowedMethod("*");
+                    configuration.addAllowedHeader("*");
+                    return configuration;
+                }
+            })
+            .and()
+            .csrf().disable()
             .authorizeHttpRequests()
             .requestMatchers("/myAccount", "/myBalance", "/myCards", "/myLoans").authenticated()
             .requestMatchers("/contact", "/notices", "/register").permitAll()
